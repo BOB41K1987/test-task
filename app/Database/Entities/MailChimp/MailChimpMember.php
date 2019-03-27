@@ -20,7 +20,7 @@ class MailChimpMember extends MailChimpEntity
     private $memberId;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $mailChimpId;
 
@@ -496,7 +496,27 @@ class MailChimpMember extends MailChimpEntity
 
     public function getValidationRules(): array
     {
-        // TODO: Implement getValidationRules() method.
+        return [
+            'mailchimp_id'                                  => 'nullable|string',
+            'email_address'                                 => 'required|string',
+            'email_type'                                    => 'nullable|string|in:html,text',
+            'status'                                        => 'required|string|in:subscribed,unsubscribed,cleaned,pending',
+            'merge_fields'                                  => 'nullable|array',
+            'interests'                                     => 'nullable|array',
+            'language'                                      => 'nullable|string',
+            'vip'                                           => 'nullable|boolean',
+            'location'                                      => 'nullable|array',
+            'location.latitude'                             => 'nullable|numeric',
+            'location.longitude'                            => 'nullable|numeric',
+            'marketing_permissions'                         => 'nullable|array',
+            'marketing_permissions.marketing_permission_id' => 'nullable|string',
+            'marketing_permissions.enabled'                 => 'nullable|boolean',
+            'ip_signup'                                     => 'nullable|ip',
+            'timestamp_signup'                              => 'nullable|string',
+            'ip_opt'                                        => 'nullable|ip',
+            'timestamp_opt'                                 => 'nullable|string',
+            'tags'                                          => 'nullable|array',
+        ];
     }
 
     public function toArray(): array
