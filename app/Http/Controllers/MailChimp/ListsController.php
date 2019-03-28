@@ -4,20 +4,14 @@ declare(strict_types=1);
 namespace App\Http\Controllers\MailChimp;
 
 use App\Database\Entities\MailChimp\MailChimpList;
-use App\Http\Controllers\Controller;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Mailchimp\Mailchimp;
 
-class ListsController extends Controller
+class ListsController extends MailChimpController
 {
-    /**
-     * @var \Mailchimp\Mailchimp
-     */
-    private $mailChimp;
-
     /**
      * ListsController constructor.
      *
@@ -26,9 +20,7 @@ class ListsController extends Controller
      */
     public function __construct(EntityManagerInterface $entityManager, Mailchimp $mailchimp)
     {
-        parent::__construct($entityManager);
-
-        $this->mailChimp = $mailchimp;
+        parent::__construct($entityManager, $mailchimp);
     }
 
     /**
