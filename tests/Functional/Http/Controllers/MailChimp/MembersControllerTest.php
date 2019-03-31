@@ -22,6 +22,7 @@ class MembersControllerTest extends MemberTestCase
         $this->seeJson(static::$memberData);
         self::assertArrayHasKey('mail_chimp_id', $content);
         self::assertNotNull($content['mail_chimp_id']);
+        self::assertEquals($this->list->getId(), $content['list']);
 
         $this->createdMembersIds[] = $content['mail_chimp_id']; // Store MailChimp member id for cleaning purposes
     }
@@ -108,8 +109,63 @@ class MembersControllerTest extends MemberTestCase
         foreach (static::$memberData as $key => $value) {
             self::assertArrayHasKey($key, $content);
             self::assertEquals($value, $content[$key]);
+            self::assertEquals($this->list->getId(), $content['list']);
         }
     }
 
+    /**
+     * Test application returns error response when member not found.
+     *
+     * @return void
+     */
+    public function testUpdateMemberNotFoundException(): void
+    {
+        $this->put(\sprintf('/mailchimp/lists/%s/members/invalid-member-id', $this->list->getId()));
 
+        $this->assertMemberNotFoundResponse('invalid-member-id', $this->list->getId());
+    }
+
+    /**
+     * Test application returns successfully response when updating existing member with updated values.
+     *
+     * @return void
+     */
+    public function testUpdateMemberSuccessfully(): void
+    {
+        $this->post(\sprintf('/mailchimp/lists/%s/members', $this->list->getId()), static::$memberData);
+        $member = \json_decode($this->response->content(), true);
+
+        if (isset($member['mail_chimp_id'])) {
+            $this->createdMembersIds[] = $member['mail_chimp_id']; // Store MailChimp member id for cleaning purposes
+        }
+
+        $this->put(\sprintf('/mailchimp/lists/%s/members/%s', $this->list->getId(), $member['member_id']), ['email_type' => 'text']);
+        $content = \json_decode($this->response->content(), true);
+
+        $this->assertResponseOk();
+
+        foreach (\array_keys(static::$memberData) as $key) {
+            self::assertArrayHasKey($key, $content);
+            self::assertEquals('text', $content['email_type']);
+        }
+    }
+
+    /**
+     * Test application returns error response with errors when member validation fails.
+     *
+     * @return void
+     */
+    public function testUpdateMemberValidationFailed(): void
+    {
+        $member = $this->createMember(static::$memberData);
+
+        $this->put(\sprintf('/mailchimp/lists/%s/members/%s', $this->list->getId(), $member->getId()), ['email_type' => 'invalid']);
+        $content = \json_decode($this->response->content(), true);
+
+        $this->assertResponseStatus(400);
+        self::assertArrayHasKey('message', $content);
+        self::assertArrayHasKey('errors', $content);
+        self::assertArrayHasKey('email_type', $content['errors']);
+        self::assertEquals('Invalid data given', $content['message']);
+    }
 }

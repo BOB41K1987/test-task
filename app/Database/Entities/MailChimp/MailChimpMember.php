@@ -530,7 +530,7 @@ class MailChimpMember extends MailChimpEntity
         $str = new Str();
 
         foreach (\get_object_vars($this) as $property => $value) {
-            $array[$str->snake($property)] = $value;
+            $array[$str->snake($property)] = is_object($value) ? $value->__toString(): $value;
         }
 
         return $array;

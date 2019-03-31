@@ -299,4 +299,9 @@ class MailChimpList extends MailChimpEntity
 
         return $array;
     }
+
+    public function __toString()
+    {
+        return $this->getId();
+    }
 }

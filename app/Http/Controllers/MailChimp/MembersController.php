@@ -121,8 +121,8 @@ class MembersController extends MailChimpController
     {
         /** @var \App\Database\Entities\MailChimp\MailChimpMember|null $member */
         $member = $this->entityManager->getRepository(MailChimpMember::class)->findOneBy([
-            'memberId'   => $memberId,
-            'list' => $listId
+            'memberId' => $memberId,
+            'list'     => $listId
         ]);
 
         if ($member === null) {
@@ -148,8 +148,8 @@ class MembersController extends MailChimpController
     {
         /** @var \App\Database\Entities\MailChimp\MailChimpMember|null $member */
         $member = $this->entityManager->getRepository(MailChimpMember::class)->findOneBy([
-            'memberId'   => $memberId,
-            'list' => $listId
+            'memberId' => $memberId,
+            'list'     => $listId
         ]);
 
         if ($member === null) {
