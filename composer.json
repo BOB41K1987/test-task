@@ -37,6 +37,7 @@
     ]
   },
   "autoload-dev": {
+    "psr-4": { "Tests\\App\\": "tests/" },
     "classmap": [
       "tests/"
     ]
