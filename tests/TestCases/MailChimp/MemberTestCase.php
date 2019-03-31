@@ -2,16 +2,19 @@
 
 namespace Tests\App\TestCases\MailChimp;
 
+use App\Database\Entities\MailChimp\MailChimpList;
 use App\Database\Entities\MailChimp\MailChimpMember;
 use Illuminate\Http\JsonResponse;
 use Mailchimp\Mailchimp;
 use Mockery;
 use Mockery\MockInterface;
-use Tests\App\TestCases\WithDatabaseTestCase;
 
-abstract class MemberTestCase extends WithDatabaseTestCase
+abstract class MemberTestCase extends ListTestCase
 {
-    protected const MAILCHIMP_EXCEPTION_MESSAGE = 'MailChimp exception';
+    /**
+     * @var MailChimpList
+     */
+    protected $list;
 
     /**
      * @var array
@@ -30,7 +33,7 @@ abstract class MemberTestCase extends WithDatabaseTestCase
             'LNAME' => '',
         ],
         'language'         => 'en',
-        'vip'              => 'false',
+        'vip'              => false,
         'location'         => [
             'latitude'  => '13.756331',
             'longitude' => '100.501762',
@@ -62,6 +65,24 @@ abstract class MemberTestCase extends WithDatabaseTestCase
     ];
 
     /**
+     * Create MailChimpList using ListTestCase
+     *
+     * @return void
+     */
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->post('/mailchimp/lists', static::$listData);
+
+        $content = \json_decode($this->response->getContent(), true);
+
+        $this->list = $this->createList($content);
+
+        $this->createdListIds[] = $this->list->getMailChimpId(); // Store MailChimp list id for cleaning purposes
+    }
+
+    /**
      * Call MailChimp to delete members created during test.
      *
      * @return void
@@ -73,16 +94,16 @@ abstract class MemberTestCase extends WithDatabaseTestCase
 
         foreach ($this->createdMembersIds as $memberId) {
             // Delete list on MailChimp after test
-            $mailChimp->delete(\sprintf('lists/%s/members/%s', $memberId));
+            $mailChimp->delete(\sprintf('lists/%s/members/%s', $this->list->getMailChimpId(), $memberId));
         }
 
         parent::tearDown();
     }
 
     /**
-     * Asserts error response when list not found.
+     * Asserts error response when member not found.
      *
-     * @param string $listId
+     * @param string $memberId
      *
      * @return void
      */
@@ -112,15 +133,16 @@ abstract class MemberTestCase extends WithDatabaseTestCase
     }
 
     /**
-     * Create MailChimp list into database.
+     * Create MailChimp member into database.
      *
      * @param array $data
      *
      * @return \App\Database\Entities\MailChimp\MailChimpMember
      */
-    protected function createList(array $data): MailChimpMember
+    protected function createMember(array $data): MailChimpMember
     {
         $member = new MailChimpMember($data);
+        $member->setList($this->list);
 
         $this->entityManager->persist($member);
         $this->entityManager->flush();

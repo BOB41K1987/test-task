@@ -33,7 +33,7 @@ class MailChimpMember extends MailChimpEntity
     /**
      * @ORM\Column(type="string")
      */
-    private $emailAddress;
+    protected $emailAddress;
 
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -73,7 +73,7 @@ class MailChimpMember extends MailChimpEntity
     /**
      * @ORM\Column(type="array", nullable=true)
      */
-    private $marketingPermission;
+    protected $marketingPermission;
 
     /**
      * @ORM\Column(type="string", nullable=true)
@@ -105,7 +105,7 @@ class MailChimpMember extends MailChimpEntity
      *
      * @return null|string
      */
-    public function getMemberId(): ?string
+    public function getId(): ?string
     {
         return $this->memberId;
     }
@@ -519,9 +519,20 @@ class MailChimpMember extends MailChimpEntity
         ];
     }
 
+    /**
+     * Get array representation of entity.
+     *
+     * @return array
+     */
     public function toArray(): array
     {
-        // TODO: Implement toArray() method.
-    }
+        $array = [];
+        $str = new Str();
 
+        foreach (\get_object_vars($this) as $property => $value) {
+            $array[$str->snake($property)] = $value;
+        }
+
+        return $array;
+    }
 }
