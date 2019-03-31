@@ -25,7 +25,7 @@ abstract class MemberTestCase extends ListTestCase
      * @var array
      */
     protected static $memberData = [
-        'email_address'    => 'testing@test.com',
+        'email_address'    => 'test-task@test.com',
         'email_type'       => 'html',
         'status'           => 'subscribed',
         'language'         => 'en',
@@ -96,16 +96,17 @@ abstract class MemberTestCase extends ListTestCase
      * Asserts error response when member not found.
      *
      * @param string $memberId
+     * @param string $listId
      *
      * @return void
      */
-    protected function assertMemberNotFoundResponse(string $memberId): void
+    protected function assertMemberNotFoundResponse(string $memberId, string $listId): void
     {
         $content = \json_decode($this->response->content(), true);
 
         $this->assertResponseStatus(404);
         self::assertArrayHasKey('message', $content);
-        self::assertEquals(\sprintf('MailChimpMember[%s] not found', $memberId), $content['message']);
+        self::assertEquals(\sprintf('MailChimpMember[%s] in MailChimpList[%s] not found', $memberId, $listId), $content['message']);
     }
 
     /**

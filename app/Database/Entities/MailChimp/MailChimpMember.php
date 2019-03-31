@@ -25,7 +25,7 @@ class MailChimpMember extends MailChimpEntity
     private $mailChimpId;
 
     /**
-     * @ORM\ManyToOne(targetEntity="MailChimpList")
+     * @ORM\ManyToOne(targetEntity="MailChimpList", cascade={"all"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $list;

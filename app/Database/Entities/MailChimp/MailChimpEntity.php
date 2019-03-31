@@ -35,6 +35,10 @@ abstract class MailChimpEntity extends Entity
                 continue;
             }
 
+            if(\is_object($value)){
+                continue;
+            }
+
             $array[$property] = $value;
         }
 
