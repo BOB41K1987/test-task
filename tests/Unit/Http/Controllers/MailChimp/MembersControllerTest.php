@@ -18,7 +18,7 @@ class MembersControllerTest extends MemberTestCase
         /** @noinspection PhpParamsInspection Mock given on purpose */
         $membersController = new MembersController($this->entityManager, $this->mockMailChimpForException('post'));
 
-        $this->assertMailChimpExceptionResponse($membersController->create($this->getRequest(static::$memberData), $this->list));
+        $this->assertMailChimpExceptionResponse($membersController->create($this->getRequest(static::$memberData), $this->list->getId()));
     }
 
     /**

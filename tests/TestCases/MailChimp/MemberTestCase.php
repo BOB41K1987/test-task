@@ -28,10 +28,6 @@ abstract class MemberTestCase extends ListTestCase
         'email_address'    => 'testing@test.com',
         'email_type'       => 'html',
         'status'           => 'subscribed',
-        'merge_fields'     => [
-            'FNAME' => '',
-            'LNAME' => '',
-        ],
         'language'         => 'en',
         'vip'              => false,
         'location'         => [
@@ -41,11 +37,7 @@ abstract class MemberTestCase extends ListTestCase
         'ip_signup'        => '202.44.213.160',
         'timestamp_signup' => '2019-03-27T17:25:58+00:00',
         'ip_opt'           => '202.44.213.161',
-        'timestamp_opt'    => '2019-03-27T17:28:58+00:00',
-        'tags'             => [
-            ['id' => 1, 'name' => 'tag1'],
-            ['id' => 2, 'name' => 'tag2'],
-        ]
+        'timestamp_opt'    => '2019-03-27T17:28:58+00:00'
     ];
 
     /**
